@@ -26,18 +26,22 @@ def store_last_seen_id(last_seen_id, file_name):
     f_write.close()
     return
 
+if __name__ == '__main__':
+    last_seen_id = retrieve_last_seen_id(FILE_NAME)
+    #mentions = api.mentions_timeline(last_seen_id, tweet_mode = 'extended')
+    search = api.search('i need a hug')
     
-last_seen_id = retrieve_last_seen_id(FILE_NAME)
-mentions = api.mentions_timeline(last_seen_id, tweet_mode = 'extended')
+    #for mention in reversed(mentions):
+        #print(str(mention.id) +' - ' + mention.full_text)
 
-for mention in reversed(mentions):
-    print(str(mention.id) +' - ' + mention.full_text)
+        #last_seen_id = mention.id
+        #store_last_seen_id(last_seen_id, FILE_NAME)
 
-    last_seen_id = mention.id
-    store_last_seen_id(last_seen_id, FILE_NAME)
-
-    if 'i need a hug' in mention.full_text.lower():
-        print('Found someone that needs virtual hugs!')
-        print('Sending them over right now...')
-        api.update_status('@' + mention.user.screen_name +
-            'Sending you lots of virtual hugs! Remember that you are loved!', mention.id)
+    for result in search:
+        if 'i need a hug' in result.text.lower():#mention.full_text.lower():
+            print(result.user.screen_name + result.text)
+            print('Found someone that needs virtual hugs!')
+            print('Sending them over right now...')
+            api.update_status('@' + result.user.screen_name + #mention.user.screen_name +
+                ' Sending you lots of virtual hugs! Remember that you are loved!',result.id)#mention.id)
+            store_last_seen_id(last_seen_id, FILE_NAME)
